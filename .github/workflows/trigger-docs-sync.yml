@@ -1,0 +1,56 @@
+name: Trigger docs sync on merged PR
+
+# krkn owns the global krknctl parameters. When a merged PR changes
+# containers/krknctl-input.json, tell the website's Doc Sync workflow to
+# regenerate the two global parameter pages.
+#
+# Per-scenario params live in krkn-hub and are handled by its own trigger.
+# This one only ever dispatches the single target "globals".
+#
+# Uses a GitHub App token scoped to website_2, so no personal PAT is involved.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  dispatch:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Did this PR touch the global parameter source?
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename')
+          if echo "$files" | grep -qx 'containers/krknctl-input.json'; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            echo "containers/krknctl-input.json changed; dispatching globals."
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "No global parameter source changed; skipping."
+          fi
+
+      - name: Mint a website_2-scoped app token
+        if: steps.check.outputs.relevant == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: StrikerEureka34
+          repositories: website_2
+
+      - name: Dispatch doc-sync on the website
+        if: steps.check.outputs.relevant == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh workflow run doc-sync.lock.yml \
+            --repo StrikerEureka34/website_2 \
+            -f scenarios="globals"
