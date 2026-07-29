@@ -67,7 +67,7 @@
   {
     "name": "wait-duration",
     "short_description": "Post chaos wait duration",
-    "description": "waits for a certain amount of time after the scenario",
+    "description": "Waits this many seconds after the scenario finishes before moving on",
     "variable": "WAIT_DURATION",
     "type": "number",
     "default": "1",
