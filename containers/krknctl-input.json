@@ -494,7 +494,7 @@
   {
     "name": "health-check-interval",
     "short_description": "Heath check interval",
-    "description": "How often to check the health check urls",
+    "description": "How often to poll the health check urls, in seconds",
     "variable": "HEALTH_CHECK_INTERVAL",
     "type": "number",
     "default": "2",
