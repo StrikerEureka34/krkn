@@ -219,7 +219,7 @@
   {
     "name": "es-run-tag",
     "short_description": "Elasticsearch run tag",
-    "description": "Elasticsearch run tag to compare similar runs",
+    "description": "Tag applied to every document from this run, so related runs can be compared in Elasticsearch",
     "variable": "ES_RUN_TAG",
     "type": "string",
     "default": "",
