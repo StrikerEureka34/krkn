@@ -434,7 +434,7 @@
   {
     "name": "telemetry-archive-size",
     "short_description": "Telemetry archive size",
-    "description": "Maximum size of each telemetry archive in KB. Lower values produce more files, which are uploaded in parallel",
+    "description": "Maximum size for telemetry archives",
     "variable": "TELEMETRY_ARCHIVE_SIZE",
     "type": "number",
     "default": "1000",
