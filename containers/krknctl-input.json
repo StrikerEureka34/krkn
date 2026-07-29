@@ -384,7 +384,7 @@
   {
     "name": "telemetry-backup-threads",
     "short_description": "Telemetry backup threads",
-    "description": "Number of threads for telemetry backup",
+    "description": "Number of archive chunks uploaded in parallel during telemetry backup",
     "variable": "TELEMETRY_BACKUP_THREADS",
     "type": "number",
     "default": "5",
